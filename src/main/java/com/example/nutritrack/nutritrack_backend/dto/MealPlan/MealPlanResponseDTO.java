@@ -23,4 +23,6 @@ public class MealPlanResponseDTO {
     private int planDuration;
     private MasterNutritionistDTO createdBy;
     private MasterUserDTO assignedUser;
+    private MasterUserDTO nutritionist;
+
 }

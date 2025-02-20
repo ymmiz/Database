@@ -1,5 +1,6 @@
 package com.example.nutritrack.nutritrack_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -45,6 +46,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "nutritionist_id",foreignKey = @ForeignKey(name = "fk_user_nutritionist"))
+    @JsonBackReference
     private Nutritionist assignedByNutritionist;
 
     @OneToOne(mappedBy = "assignedUser")

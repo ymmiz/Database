@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MasterNutritionistDTO {
-
     private Long nutritionistId;
     private String name;
     private String email;

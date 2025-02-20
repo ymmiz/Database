@@ -1,11 +1,14 @@
 package com.example.nutritrack.nutritrack_backend.dto.Nutritionist;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
-public class NutritionistRequestDTO extends MasterNutritionistDTO{
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class NutritionistRequestDTO{
+
+        private String name;
+        private String email;
         private String password;
+        private String specialization;
 }

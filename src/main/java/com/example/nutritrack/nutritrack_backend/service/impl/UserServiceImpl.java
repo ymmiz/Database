@@ -1,11 +1,15 @@
 package com.example.nutritrack.nutritrack_backend.service.impl;
 
+import com.example.nutritrack.nutritrack_backend.dto.meallog.MealLogResponseDTO;
 import com.example.nutritrack.nutritrack_backend.dto.user.UserRequestDTO;
 import com.example.nutritrack.nutritrack_backend.dto.user.UserResponseDTO;
 import com.example.nutritrack.nutritrack_backend.exception.ResourceNotFoundException;
+import com.example.nutritrack.nutritrack_backend.mapper.MealLogMapper;
 import com.example.nutritrack.nutritrack_backend.mapper.UserMapper;
+import com.example.nutritrack.nutritrack_backend.model.MealLog;
 import com.example.nutritrack.nutritrack_backend.model.Nutritionist;
 import com.example.nutritrack.nutritrack_backend.model.User;
+import com.example.nutritrack.nutritrack_backend.repository.MealLogRepository;
 import com.example.nutritrack.nutritrack_backend.repository.NutritionistRepository;
 import com.example.nutritrack.nutritrack_backend.repository.UserRepository;
 import com.example.nutritrack.nutritrack_backend.service.UserService;
@@ -22,16 +26,33 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final MealLogRepository mealLogRepository;
+    private final MealLogMapper mealLogMapper;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final NutritionistRepository nutritionistRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, NutritionistRepository nutritionistRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, NutritionistRepository nutritionistRepository, MealLogRepository mealLogRepository, MealLogMapper mealLogMapper) {
+        this.mealLogRepository = mealLogRepository;
+        this.mealLogMapper = mealLogMapper;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.nutritionistRepository = nutritionistRepository;
     }
+
+    @Override
+    public List<MealLogResponseDTO> getMealLogsByUser(Long userId) {
+        List<MealLog> mealLogs = mealLogRepository.findMealLogsByUserId(userId);
+        return mealLogMapper.toResponseDtoList(mealLogs);
+    }
+
+    @Override
+    public List<MealLogResponseDTO> getAllMealLogs() {
+        List<MealLog> mealLogs = mealLogRepository.getAllMealLogs();
+        return mealLogMapper.toResponseDtoList(mealLogs);
+    }
+
 
     @Override
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
@@ -67,15 +88,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDTO> getUsersByNutritionist(Long nutritionistId) {
-        List<User> users = userRepository.findUsersAssignedByNutritionist(nutritionistId);
-        return userMapper.toResponseDtoList(users);
-    }
-
-    @Override
     public UserResponseDTO getUserByMealPlan(Long mealPlanId) {
-        User user = userRepository.findUserByMealPlanId(mealPlanId)
-                .orElseThrow(() -> new RuntimeException("No user assigned to this meal plan"));
+        User user = userRepository.findUserByMealPlanId(mealPlanId).orElseThrow(() -> new RuntimeException("No user assigned to this meal plan"));
         return userMapper.toResponseDto(user);
     }
 
@@ -95,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
+        List<User> users = (List<User>) userRepository.findAll();
         return userMapper.toDtoList(users);
     }
 

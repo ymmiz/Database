@@ -23,6 +23,20 @@ public interface MealPlanRepository extends JpaRepository<MealPlan, Long> {
     List<MealPlan> findByCreatedByNutritionistId(@Param("nutritionistId") Long nutritionistId);
 
     // Insert a new meal plan (Handled automatically by JpaRepository `save()` method)
+    @Transactional
+    @Query(value = "INSERT INTO mealplans (title, description, weekly_meals, goal, calories, plan_duration, created_by, assigned_user_id) " +
+            "VALUES (:title, :description, :weeklyMeals, :goal, :calories, :planDuration, :createdBy, :assignedUserId) " +
+            "RETURNING plan_id", nativeQuery = true)
+    Long createMealPlan(
+            @Param("title") String title,
+            @Param("description") String description,
+            @Param("weeklyMeals") String weeklyMeals,
+            @Param("goal") String goal,
+            @Param("calories") int calories,
+            @Param("planDuration") int planDuration,
+            @Param("createdBy") Long createdBy,
+            @Param("assignedUserId") Long assignedUserId
+    );
 
     // Assign a meal plan to a different user
     @Transactional

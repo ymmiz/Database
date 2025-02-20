@@ -1,5 +1,6 @@
 package com.example.nutritrack.nutritrack_backend.controller;
 
+import com.example.nutritrack.nutritrack_backend.dto.meallog.MealLogResponseDTO;
 import com.example.nutritrack.nutritrack_backend.dto.user.UserRequestDTO;
 import com.example.nutritrack.nutritrack_backend.dto.user.UserResponseDTO;
 import com.example.nutritrack.nutritrack_backend.service.UserService;
@@ -34,11 +35,6 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @GetMapping("/assigned-by/{nutritionistId}")
-    public List<UserResponseDTO> getUsersByNutritionist(@PathVariable("nutritionistId") Long nutritionistId) {
-        return userService.getUsersByNutritionist(nutritionistId);
-    }
-
     @GetMapping("/by-mealplan/{mealPlanId}")
     public UserResponseDTO getUserByMealPlan(@PathVariable("mealPlanId") Long mealPlanId) {
         return userService.getUserByMealPlan(mealPlanId);
@@ -66,5 +62,17 @@ public class UserController {
 
         UserResponseDTO updatedUser = userService.assignUserToNutritionist(userId, nutritionistId);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    // Fetch meal logs by user ID
+    @GetMapping("/{userId}/meal-logs")
+    public List<MealLogResponseDTO> getMealLogsByUser(@PathVariable Long userId) {
+        return userService.getMealLogsByUser(userId);
+    }
+
+    // Fetch all meal logs
+    @GetMapping("/meal-logs")
+    public List<MealLogResponseDTO> getAllMealLogs() {
+        return userService.getAllMealLogs();
     }
 }
